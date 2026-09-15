@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIH 2026 - Premium Certificate</title>
     
-    <!-- Google Fonts for Ultra Premium Typography -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap" rel="stylesheet">
     
-    <!-- Libraries for PDF Generation -->
+     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        /* === Global & Landing UI Styles === */
+       
         :root {
             --bg-color: #f4f4f9;
             --text-dark: #111827;
@@ -124,7 +124,7 @@
             box-shadow: none;
         }
 
-        /* === HIDDEN CERTIFICATE CAPTURE AREA === */
+         
         .export-wrapper {
             position: absolute;
             left: -9999px;
@@ -140,7 +140,7 @@
             border: 1px solid #eaeaea; 
         }
 
-        /* Top Left Small Gold Corner Accent */
+        
         .corner-accent {
             position: absolute;
             top: 15px;
@@ -152,7 +152,7 @@
             z-index: 5;
         }
 
-        /* The Beautiful Left Wave (Pure SVG for crisp rendering) */
+         
         .left-wave-container {
             position: absolute;
             top: 0;
@@ -162,7 +162,7 @@
             z-index: 1;
         }
 
-        /* Top Right Hanging Ribbon for Axcentra (Big Size Maintained) */
+        
         .top-ribbon-container {
             position: absolute;
             top: -5px;
@@ -172,20 +172,20 @@
             z-index: 10;
         }
         
-        /* FIX: Axcentra Logo Made Bigger */
+         
         .top-ribbon-logo {
             position: absolute;
-            top: 35px; /* Moved slightly up */
+            top: 35px; 
             left: 50%;
             transform: translateX(-50%);
-            max-width: 135px; /* Increased from 120px */
-            max-height: 110px; /* Increased from 90px */
+            max-width: 135px; 
+            max-height: 110px; 
             width: 85%;
             object-fit: contain;
             z-index: 11;
         }
 
-        /* === MAIN CONTENT === */
+         
         .content-wrapper {
             position: relative;
             z-index: 5;
@@ -215,7 +215,7 @@
             margin-top: -5px;
         }
 
-        /* Pure CSS Gold Banner */
+      
         .banner-wrapper {
             position: relative;
             display: inline-block;
@@ -261,7 +261,7 @@
             margin-bottom: 15px;
         }
 
-        /* === NAME CONTAINER (Fixed for auto-shrink) === */
+        
         .name-container {
             width: 75%;
             border-bottom: 2px solid #e5e7eb;
@@ -476,7 +476,7 @@
                     <div class="signature-block">
                         <div class="sign-image">Harpinder Singh</div>
                         <div class="sign-line"></div>
-                        <div class="sign-title">FOUNDER & PROGRAM HEAD</div>
+                        <div class="sign-title">Founder & Program Head</div>
                         <div class="sign-desc">Axcentra</div>
                     </div>
 
@@ -489,9 +489,9 @@
                     </div>
 
                     <div class="signature-block">
-                        <div class="sign-image">Cyrus</div>
+                        <div class="sign-image">Cyrus Taylor</div>
                         <div class="sign-line"></div>
-                        <div class="sign-title">TECH PARTNER HEAD</div>
+                        <div class="sign-title">Wolfram Research Head</div>
                         <div class="sign-desc">Wolfram|One</div>
                     </div>
                 </div>
@@ -505,7 +505,7 @@
         </div>
     </div>
 
-    <!-- === JAVASCRIPT === -->
+    
     <script>
         async function autoResizeText() {
             const nameEl = document.getElementById('dynamic-name');
