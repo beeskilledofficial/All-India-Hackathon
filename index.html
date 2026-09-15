@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIH 2026 - Premium Certificate</title>
+    
+    <!-- Google Fonts for Ultra Premium Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Libraries for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        /* === Global & Landing UI Styles === */
+        :root {
+            --bg-color: #f4f4f9;
+            --text-dark: #111827;
+            --gold-accent: #cfa645;
+            --gold-dark: #9a7820;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            background-color: #ffffff;
+            padding: 3rem 4rem;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid var(--gold-accent);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            z-index: 10;
+        }
+
+        .app-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+        }
+
+        .app-desc {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border-radius: 6px;
+            border: 2px solid #e5e7eb;
+            background-color: #f9fafb;
+            color: var(--text-dark);
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--gold-accent);
+            background-color: #fff;
+        }
+
+        .btn-generate {
+            width: 100%;
+            padding: 1rem;
+            background: var(--text-dark);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .btn-generate:hover {
+            background: var(--gold-accent);
+            box-shadow: 0 5px 15px rgba(207, 166, 69, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-generate:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* === HIDDEN CERTIFICATE CAPTURE AREA === */
+        .export-wrapper {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+        }
+
+        .certificate {
+            width: 1123px; /* A4 Landscape 96dpi */
+            height: 794px;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #eaeaea; 
+        }
+
+        /* Top Left Small Gold Corner Accent */
+        .corner-accent {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+            border-top: 3px solid var(--gold-accent);
+            border-left: 3px solid var(--gold-accent);
+            z-index: 5;
+        }
+
+        /* The Beautiful Left Wave (Pure SVG for crisp rendering) */
+        .left-wave-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 380px;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Top Right Hanging Ribbon for Axcentra (Big Size Maintained) */
+        .top-ribbon-container {
+            position: absolute;
+            top: -5px;
+            right: 60px;
+            width: 150px; 
+            height: 200px; 
+            z-index: 10;
+        }
+        
+        /* FIX: Axcentra Logo Made Bigger */
+        .top-ribbon-logo {
+            position: absolute;
+            top: 35px; /* Moved slightly up */
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 135px; /* Increased from 120px */
+            max-height: 110px; /* Increased from 90px */
+            width: 85%;
+            object-fit: contain;
+            z-index: 11;
+        }
+
+        /* === MAIN CONTENT === */
+        .content-wrapper {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            padding: 80px 180px 50px 250px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pre-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            color: #4b5563;
+            letter-spacing: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.2rem;
+            color: var(--text-dark);
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-top: -5px;
+        }
+
+        /* Pure CSS Gold Banner */
+        .banner-wrapper {
+            position: relative;
+            display: inline-block;
+            margin: 15px 0 30px 0;
+        }
+
+        .banner-main {
+            background: var(--gold-accent);
+            color: #ffffff;
+            padding: 10px 40px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .banner-tail {
+            position: absolute;
+            top: 10px;
+            width: 0;
+            height: 0;
+            z-index: 1;
+            border-top: 20px solid var(--gold-dark);
+            border-bottom: 20px solid var(--gold-dark);
+        }
+
+        .banner-tail.left {
+            left: -20px;
+            border-left: 25px solid transparent;
+        }
+
+        .banner-tail.right {
+            right: -20px;
+            border-right: 25px solid transparent;
+        }
+
+        .certify-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            color: #374151;
+            margin-bottom: 15px;
+        }
+
+        /* === NAME CONTAINER (Fixed for auto-shrink) === */
+        .name-container {
+            width: 75%;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80px; 
+        }
+
+        .student-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 64px; 
+            color: var(--text-dark);
+            font-weight: 700;
+            white-space: nowrap; 
+            overflow: hidden;
+            max-width: 100%;
+        }
+
+        .reason {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: #4b5563;
+            text-align: center;
+            max-width: 85%;
+        }
+
+        .reason strong {
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+         
+        .footer-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 90%;
+            margin-top: auto;
+            position: relative;
+        }
+
+        .signature-block {
+            text-align: center;
+            width: 220px;
+        }
+
+        
+        .sign-image {
+            font-family: 'Playfair Display', cursive;
+            font-size: 1.6rem;  
+            color: #1f2937;
+            margin-bottom: 5px;
+            font-style: italic;
+            white-space: nowrap;  
+        }
+
+        .sign-line {
+            width: 100%;
+            height: 1px;
+            background-color: #9ca3af;
+            margin-bottom: 8px;
+        }
+
+        .sign-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+        }
+        
+        .sign-desc {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 3px;
+        }
+
+        .seal {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px dashed var(--gold-accent);
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 20px 10px 20px;
+        }
+
+        .seal-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1px solid var(--gold-accent);
+            background: #fffdf5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-accent);
+        }
+
+        .seal-inner span {
+            font-size: 0.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .seal-inner .star {
+            font-size: 1rem;
+            margin: 2px 0;
+        }
+
+        .bottom-right-logo {
+            position: absolute;
+            bottom: 40px;
+            right: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .bottom-right-logo img {
+            max-width: 130px;
+            max-height: 55px;
+            object-fit: contain;
+        }
+
+        .bottom-right-text {
+            font-size: 0.65rem;
+            color: #6b7280;
+            margin-top: 6px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div class="app-container">
+        <h1 class="app-title">AIH 2026</h1>
+        <p class="app-desc">Generate your premium official Certificate for the All India Hackathon.</p>
+        
+        <div class="input-group">
+            <label for="studentName">Student's Full Name</label>
+            <input type="text" id="studentName" placeholder="e.g. Yashwardhan Singh" autocomplete="off" />
+        </div>
+        
+        <button id="generateBtn" class="btn-generate" onclick="generateCertificate()">Generate Certificate</button>
+    </div>
+
+     
+    <div class="export-wrapper">
+        <div id="certificate" class="certificate">
+            
+            <div class="corner-accent"></div>
+
+             
+            <div class="left-wave-container">
+                <svg width="100%" height="100%" viewBox="0 0 380 794" preserveAspectRatio="none">
+                    <defs>
+                        <pattern id="dotPattern" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+                            <circle cx="2" cy="2" r="1.5" fill="rgba(255,255,255,0.15)"></circle>
+                        </pattern>
+                    </defs>
+                    <path d="M0,0 L200,0 C420,250 -50,550 250,794 L0,794 Z" fill="#cfa645" />
+                    <path d="M0,0 L180,0 C400,250 -70,550 230,794 L0,794 Z" fill="#111827" />
+                    <path d="M0,0 L180,0 C400,250 -70,550 230,794 L0,794 Z" fill="url(#dotPattern)" />
+                </svg>
+            </div>
+
+             
+            <div class="top-ribbon-container">
+                <svg width="100%" height="100%" viewBox="0 0 150 200" preserveAspectRatio="none">
+                    <polygon points="0,0 150,0 150,200 75,175 0,200" fill="#cfa645" />
+                    <polygon points="5,0 145,0 145,193 75,170 5,193" fill="#111827" />
+                </svg>
+                <img src="logo.png" alt="Axcentra Logo" class="top-ribbon-logo">
+            </div>
+
+          
+            <div class="content-wrapper">
+                <div class="pre-title">Hackathon</div>
+                <div class="main-title">CERTIFICATE</div>
+                
+                <div class="banner-wrapper">
+                    <div class="banner-tail left"></div>
+                    <div class="banner-tail right"></div>
+                    <div class="banner-main">OF PARTICIPATION</div>
+                </div>
+
+                <div class="certify-text">This is proudly presented to</div>
+                
+                <div class="name-container">
+                    <div id="dynamic-name" class="student-name">Student Name</div>
+                </div>
+
+                <div class="reason">
+                    has successfully completed the 72-hour national-level online coding challenge at <strong>All India Hackathon (AIH) 2026</strong> organized by Axcentra, demonstrating exceptional problem-solving and technical skills.
+                </div>
+
+                 
+                <div class="footer-area">
+                    <div class="signature-block">
+                        <div class="sign-image">Harpinder Singh</div>
+                        <div class="sign-line"></div>
+                        <div class="sign-title">FOUNDER & PROGRAM HEAD</div>
+                        <div class="sign-desc">Axcentra</div>
+                    </div>
+
+                    <div class="seal">
+                        <div class="seal-inner">
+                            <span>Verified</span>
+                            <span class="star">★</span>
+                            <span>AIH 2026</span>
+                        </div>
+                    </div>
+
+                    <div class="signature-block">
+                        <div class="sign-image">Cyrus</div>
+                        <div class="sign-line"></div>
+                        <div class="sign-title">TECH PARTNER HEAD</div>
+                        <div class="sign-desc">Wolfram|One</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-right-logo">
+                <img src="logo1.png" alt="Wolfram One Logo">
+                <div class="bottom-right-text">TECH PARTNER</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- === JAVASCRIPT === -->
+    <script>
+        async function autoResizeText() {
+            const nameEl = document.getElementById('dynamic-name');
+            nameEl.style.fontSize = '64px';
+            
+            await new Promise(resolve => setTimeout(resolve, 50));
+            
+            let currentSize = 64;
+            while (nameEl.scrollWidth > nameEl.clientWidth && currentSize > 20) {
+                currentSize -= 2;
+                nameEl.style.fontSize = currentSize + 'px';
+            }
+        }
+
+        async function generateCertificate() {
+            const nameInput = document.getElementById('studentName').value.trim();
+            const btn = document.getElementById('generateBtn');
+
+            if (!nameInput) {
+                alert("Please enter your full name.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = "Processing PDF...";
+            
+            document.getElementById('dynamic-name').textContent = nameInput;
+            await autoResizeText();
+
+            try {
+                await document.fonts.ready;
+
+                const certElement = document.getElementById('certificate');
+
+                const canvas = await html2canvas(certElement, {
+                    scale: 3, 
+                    useCORS: true,
+                    backgroundColor: "#ffffff"
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                
+                const pdf = new jsPDF('l', 'mm', 'a4');
+                const pdfWidth = 297; 
+                const pdfHeight = 210; 
+
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`AIH_2026_Certificate_${nameInput.replace(/\s+/g, '_')}.pdf`);
+
+            } catch (error) {
+                console.error("Error generating certificate:", error);
+                alert("An error occurred while generating the certificate. Please try again.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Generate Certificate";
+            }
+        }
+
+        document.getElementById('studentName').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                generateCertificate();
+            }
+        });
+    </script>
+</body>
+</html>
